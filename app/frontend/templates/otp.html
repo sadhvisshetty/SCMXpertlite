@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SCMXPertLite-OTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="../static/otp.css">
+</head>
+<body>
+
+    <div class="Header">
+        <h2 class="text-center"><b>SCMXPertLite</b></h2>
+        <h3 class="text-center"><b>Enter OTP to Sign Up Successfully</b></h3>
+    </div>
+
+    <div class="container text-center">
+        <img src="../images/otpImage.png"  alt="Your" class="img-fluid">
+    </div>
+
+    <div id="Styling" class="container">
+        <form action="/verify-otp" method="post">
+            <input type="hidden" id="username" name="username" value="{{ usname }}">
+            <input type="hidden" id="useremail" name="useremail" value="{{ usemail }}">
+            <input type="hidden" id="userpassword" name="userpassword" value="{{ uspassword }}">
+
+            <div class="form-group">
+                <label for="otp">Enter the OTP you received to your email <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter the OTP" required>
+            </div>
+
+            <div class="form-group text-center">
+                <span class="det text-danger" id="detail">{{detail}}</span>
+            </div>
+
+            <div class="form-group">
+                <div class="btn-container">
+                    <button type="submit" id="create" class="btn btn-primary button-signup mx-2">Submit</button>
+                    <button type="reset" id="clear" class="btn button-clear mx-2">Clear</button>
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById("detail").style.display = "none";
+        }, 5000);
+
+        var sessionTimeout = 10 * 60 * 1000;
+        var timeout;
+        function startSessionTimeout() {
+            clearTimeout(timeout);
+            timeout = setTimeout(logout, sessionTimeout);
+        }
+        function logout() {
+            window.location.href = "/logout";
+        }
+
+        document.addEventListener("mousemove", startSessionTimeout);
+        document.addEventListener("keydown", startSessionTimeout);
+    </script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

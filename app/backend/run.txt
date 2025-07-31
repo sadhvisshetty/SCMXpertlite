@@ -1,0 +1,4 @@
+uvicorn main:app --reload
+uvicorn backend.main:app --reload
+pip install fastapi uvicorn pymongo python-jose[cryptography] passlib[bcrypt] python-dotenv
+pip install -r requirements.txt

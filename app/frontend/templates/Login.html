@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SCMXPertLite-Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="/static/Login.css" />
+</head>
+
+<body onload="createCaptcha()">
+    <div class="container">
+        <div class="animated-edge top-edge"></div>
+        <div class="animated-edge bottom-edge"></div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 login-container">
+                <div class="form-group">
+                    <p class="text-success text-center" id="fade1">{{ message }}</p>
+                </div>
+                <div class="text-center">
+                    <h2><b>SCMXPertLite</b></h2>
+                    <h3><b>Sign in now</b></h3>
+                </div>
+                
+                <form id="loginForm" action="#" method="post">
+                    <div class="form-group">
+                        <label for="email">Email Address<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" onkeyup="emailcheck()" required />
+                    </div>
+                    <div id="wrem"></div>
+                    <div class="form-group">
+                        <label for="password">Password<span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1" aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="captcha">CAPTCHA</label>
+                        <div class="captcha-container">
+                            <div id="captchaDisplay"></div>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-dark button-signin" type="button" id="refresh" onclick="createCaptcha()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-group mt-2">
+                            <input type="text" class="form-control" id="captchaTextBox" name="captchaTextBox" placeholder="Enter the CAPTCHA code" onkeyup="validateCaptcha()" required />
+                        </div>
+                    </div>
+                    <div id="output"></div>
+                    <div class="form-group">
+                        <p class="text-danger text-center" id="fade2">{{ detail }}</p>
+                    </div>
+                    <div class="form-group">
+                        <a href="/forgot" class="forgot-password">Forgot Password? (click here to reset the password)</a>
+                    </div>
+                    <div class="form-group">
+                        <a href="/signUp" class="signup-link">Not signed up yet? Sign Up</a>
+                    </div>
+                    <div class="form-group">
+                        <div class="btn-container">
+                            <button type="submit" id="create" class="btn btn-primary button-signin">Sign In</button>
+                            <button type="reset" id="clear" class="btn btn-secondary button-signin">Clear Details</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let code = "";
+
+        function emailcheck() {
+            const email = document.getElementById("email");
+            const wrem = document.getElementById("wrem");
+            const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+            if (email.value === "") {
+                wrem.innerHTML = "";
+            } else if (!email.value.match(mailformat)) {
+                wrem.style.color = "#8B0000";
+                wrem.innerHTML = "◉ Please enter a valid email";
+            } else {
+                wrem.innerHTML = "";
+            }
+        }
+
+        function createCaptcha() {
+            document.getElementById("captchaTextBox").value = "";
+            document.getElementById("output").innerHTML = "";
+            document.getElementById("captchaDisplay").innerHTML = "";
+
+            const charsArray = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$";
+            const captcha = [];
+            while (captcha.length < 7) {
+                const index = Math.floor(Math.random() * charsArray.length);
+                if (captcha.indexOf(charsArray[index]) === -1)
+                    captcha.push(charsArray[index]);
+            }
+
+            code = captcha.join("");
+
+            const canvas = document.createElement("canvas");
+            canvas.id = "captcha";
+            canvas.width = 150;
+            canvas.height = 35;
+
+            const ctx = canvas.getContext("2d");
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.strokeText(code, 10, 25);
+
+            document.getElementById("captchaDisplay").appendChild(canvas);
+        }
+
+        function validateCaptcha() {
+            const output = document.getElementById("output");
+            const userInput = document.getElementById("captchaTextBox").value;
+
+            if (userInput === code) {
+                output.className = "correctCaptcha";
+                output.innerHTML = "Correct!";
+                document.getElementById("create").disabled = false;
+                document.getElementById("create").style.opacity = 1;
+            } else {
+                output.className = "incorrectCaptcha";
+                output.innerHTML = "Incorrect, please try again";
+                document.getElementById("create").disabled = true;
+                document.getElementById("create").style.opacity = 0.4;
+            }
+        }
+
+        setTimeout(function () {
+            const fade1 = document.getElementById("fade1");
+            const fade2 = document.getElementById("fade2");
+            if (fade1) fade1.style.display = "none";
+            if (fade2) fade2.style.display = "none";
+        }, 5000);
+
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // New code: handle login form submit via fetch and redirect on success
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/Login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    email: email,
+                    password: password,
+                }),
+                credentials: 'include'  
+            });
+
+                if (!response.ok) {
+                const data = await response.json();
+                console.error('Login failed:', data); 
+                alert('Login failed: ' + (data.detail || JSON.stringify(data)));
+                return;
+            }
+
+                const data = await response.json();
+                // localStorage.setItem('token', data.access_token);
+
+                // Redirect to dashboard page after successful login
+                window.location.href = '/dashboard';
+
+            } catch (error) {
+                alert('Error during login, please try again.');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

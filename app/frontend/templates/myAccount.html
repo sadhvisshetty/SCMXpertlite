@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Account</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/static/myAccount.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/static/dashboard.css" />
+  <style>
+    /* Add basic styles for delete button */
+    .btn-delete {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .btn-delete:hover {
+      background-color: #c0392b;
+    }
+    table#users-table th, table#users-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <nav class="navbar" id="sidebar" aria-label="Sidebar navigation">
+    <button class="toggle-btn" type="button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/dashboard">
+          <i class="fa-solid fa-chart-column"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/myAccount">
+          <i class="fas fa-user-circle me-1"></i> My Account
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/shipment">
+          <i class="fa-solid fa-truck-fast"></i> Shipment
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/myShipment">
+          <i class="fa-solid fa-cart-arrow-down"></i> My Shipment
+        </a>
+      </li>
+
+      {% if user.role == "Admin" %}
+        <li class="nav-item">
+          <a class="nav-link" href="/deviceData">
+            <i class="fas fa-database me-1"></i> Device Data
+          </a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <button type="button" class="nav-link btn btn-link text-muted p-0" onclick="showMessage()" aria-disabled="true" style="cursor: not-allowed; background-color: transparent;
+           color: rgba(255, 255, 255, 0.5) !important; ">
+            <i class="fas fa-database me-1"></i> Device Data
+          </button>
+        </li>
+      {% endif %}
+    </ul>
+
+    <a href="/logout" class="navbar-logout text-white">
+      <i class="fas fa-sign-out-alt me-1"></i> Logout
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <h1><i class="fa-regular fa-user"></i> My Account</h1>
+
+    <div id="user-info" class="user-info">
+      <p><strong>Name:</strong> <span id="username">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+      <p><strong>Total Shipments:</strong> <span id="shipment-count">Loading...</span></p>
+    </div>
+
+    <div id="error-msg" class="error-msg" style="display:none;">
+      Failed to load user data.
+    </div>
+
+    <!-- Admin User Management Section -->
+    {% if user.role == "Admin" %}
+    <section id="manage-users">
+      <h2>User Management</h2>
+      <table id="users-table" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- User rows populated by JS -->
+        </tbody>
+      </table>
+      <div id="user-error-msg" class="error-msg" style="display:none; color: red; margin-top: 10px;">
+        Failed to load users.
+      </div>
+    </section>
+    {% endif %}
+  </main>
+
+  <!-- JavaScript -->
+  <script>
+    async function fetchUserData() {
+      try {
+        const response = await fetch('/myAccount', {
+          credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const user = await response.json();
+        console.log(user);
+        document.getElementById('username').textContent = user.username || 'N/A';
+        document.getElementById('email').textContent = user.email || 'N/A';
+        document.getElementById('shipment-count').textContent = user.shipmentCount ?? '0';
+        
+
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        const userInfo = document.getElementById('user-info');
+        const errMsg = document.getElementById('error-msg');
+        if (userInfo && errMsg) {
+          userInfo.style.display = 'none';
+          errMsg.style.display = 'block';
+          errMsg.textContent = 'Could not load user data. Please try again later.';
+        }
+      }
+    }
+
+    // Only fetch user list if admin section exists
+    async function fetchUsers() {
+      const tbody = document.querySelector('#users-table tbody');
+      const userError = document.getElementById('user-error-msg');
+      if (!tbody) return;
+
+      try {
+        const response = await fetch('/users', { 
+          credentials: 'include'
+        });
+        if (!response.ok) throw new Error('Failed to fetch users');
+        const users = await response.json();
+
+        tbody.innerHTML = ''; 
+
+        // Exclude Admin users from the list
+        users
+          .filter(user => user.role.toLowerCase() !== 'admin')
+          .forEach(user => {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+              <td>${user.username}</td>
+              <td>${user.email}</td>
+              <td>${user.role}</td>
+              <td>
+                <button class="btn-delete" data-username="${user.username}" data-userid="${user.id}">Delete</button>
+              </td>
+            `;
+
+            tbody.appendChild(tr);
+          });
+
+        // Attach delete handlers
+        document.querySelectorAll('.btn-delete').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const username = e.target.getAttribute('data-username');
+            const userId = e.target.getAttribute('data-userid');
+            if (!confirm(`Are you sure you want to delete user "${username}"?`)) 
+            return;
+
+            try {
+              const res = await fetch(`/user/${encodeURIComponent(userId)}`, {
+                method: 'DELETE',
+                credentials: 'include'
+              });
+
+              if (!res.ok) throw new Error('Failed to delete user');
+
+              // Remove row from table
+              e.target.closest('tr').remove();
+
+            } catch (err) {
+              alert('Error deleting user: ' + err.message);
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error('Error loading users:', err);
+        if (userError) {
+          userError.style.display = 'block';
+          userError.textContent = 'Could not load users. Please try again later.';
+        }
+      }
+    }
+
+    function showMessage() {
+      if (document.querySelector(".message")) return;
+
+      const message = document.createElement("div");
+      message.className = "message";
+      message.textContent = "You do not have permission to access Device Data.";
+
+      const navItems = document.querySelectorAll(".navbar-nav .nav-item");
+      if (navItems.length >= 5) {
+        navItems[4].appendChild(message);
+        setTimeout(() => {
+          if (message.parentNode) {
+            message.parentNode.removeChild(message);
+          }
+        }, 2000);
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const container = document.querySelector(".container");
+      if (sidebar && container) {
+        sidebar.classList.toggle("collapsed");
+        container.classList.toggle("full");
+      }
+    }
+
+    window.addEventListener('load', () => {
+      fetchUserData();
+
+      // Only fetch users if admin user management section exists
+      if (document.getElementById('manage-users')) {
+        fetchUsers();
+      }
+    });
+  </script>
+
+</body>
+</html>

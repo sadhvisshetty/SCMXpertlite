@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SCMXPertLite - Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../static/signUp.css" />
+</head>
+<body>
+
+<div class="signup-container">
+  <div class="form-box">
+    <h2>SCMXPertLite</h2>
+    <h4>Create Account</h4>
+
+    <form id="signupForm" novalidate>
+      <div class="form-group">
+        <label for="name">What should we call you?<span class="text-danger">*</span></label>
+        <input type="text" id="name" name="username" class="form-control" required />
+        <div id="nameError" class="validation-message">Please enter your full name.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address<span class="text-danger">*</span></label>
+        <input type="email" id="email" name="email" class="form-control" required />
+        <div id="emailError" class="validation-message">Please enter a valid email.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Create a New Password<span class="text-danger">*</span></label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-control"
+          required
+          placeholder="At least 8 chars, uppercase, lowercase & number"
+        />
+        <div id="passwordError" class="validation-message">
+          Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirm New Password<span class="text-danger">*</span></label>
+        <input type="password" id="confirm" name="confirm" class="form-control" required />
+        <div id="confirmError" class="validation-message">Passwords do not match.</div>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="terms" required />
+        <label class="form-check-label" for="terms">I have read and accept the Privacy & Policy Conditions of</label>
+      </div>
+      <div id="termsError" class="validation-message">You must accept the terms.</div>
+
+      <button type="submit" class="btn">Sign Up</button>
+
+      <p class="text-center mt-3">
+        Already have an account? <a href="Login" class="signin-link">Sign In</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('signupForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const confirmInput = document.getElementById('confirm');
+  const termsCheckbox = document.getElementById('terms');
+
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const passwordError = document.getElementById('passwordError');
+  const confirmError = document.getElementById('confirmError');
+  const termsError = document.getElementById('termsError');
+
+  function validateEmail(email) {
+    const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(email);
+  }
+
+  function validatePassword(password) {
+    const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    return re.test(password);
+  }
+
+  emailInput.addEventListener('input', () => {
+    emailError.style.display = validateEmail(emailInput.value) ? 'none' : 'block';
+  });
+
+  passwordInput.addEventListener('input', () => {
+    passwordError.style.display = validatePassword(passwordInput.value) ? 'none' : 'block';
+  });
+
+  confirmInput.addEventListener('input', () => {
+    confirmError.style.display = confirmInput.value === passwordInput.value ? 'none' : 'block';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    let valid = true;
+
+    if (nameInput.value.trim() === '') {
+      nameError.style.display = 'block';
+      valid = false;
+    } else {
+      nameError.style.display = 'none';
+    }
+
+    if (!validateEmail(emailInput.value)) {
+      emailError.style.display = 'block';
+      valid = false;
+    } else {
+      emailError.style.display = 'none';
+    }
+
+    if (!validatePassword(passwordInput.value)) {
+      passwordError.style.display = 'block';
+      valid = false;
+    } else {
+      passwordError.style.display = 'none';
+    }
+
+    if (confirmInput.value !== passwordInput.value || confirmInput.value === '') {
+      confirmError.style.display = 'block';
+      valid = false;
+    } else {
+      confirmError.style.display = 'none';
+    }
+
+    if (!termsCheckbox.checked) {
+      termsError.style.display = 'block';
+      valid = false;
+    } else {
+      termsError.style.display = 'none';
+    }
+
+    if (!valid) return;
+
+    const user = {
+      username: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+      permissions: ["User"]
+    };
+
+    try {
+      const response = await fetch('http://localhost:8000/signUp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        let errorMsg = "Signup failed";
+        if (err.detail) {
+          if (typeof err.detail === 'string') {
+            errorMsg = err.detail;
+          } else if (typeof err.detail === 'object') {
+            errorMsg = JSON.stringify(err.detail);
+          }
+        } else if (err.message) {
+          errorMsg = err.message;
+        }
+        throw new Error(errorMsg);
+      }
+
+      alert('Signup successful! Please login.');
+      window.location.href = '/Login';
+
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+</script>
+
+</body>
+</html>

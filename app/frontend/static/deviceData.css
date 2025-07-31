@@ -1,0 +1,158 @@
+/* Body background */
+body {
+    background-color: #e8f0ed;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Vertical fixed navbar */
+.navbar {
+    width: 250px;               
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #1f7e8c;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;  
+    overflow-y: auto;
+}
+.Heading {
+    color: black;
+}
+
+/* Nav list layout */
+.navbar-nav {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    flex-grow: 1;
+}
+
+/* Nav items spacing */
+.navbar-nav .nav-item {
+    margin-bottom: 12px;
+}
+
+/* Icon alignment */
+.navbar-nav .nav-link i {
+    margin-right: 8px;
+}
+
+/* Nav links style */
+.navbar-nav .nav-link {
+    color: white;
+    font-weight: 500;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Hover effect for nav links */
+.navbar-nav .nav-link:hover {
+    background-color: white !important;
+    color: #1f7e8c !important;
+    text-decoration: none;
+}
+
+/* Push logout to bottom */
+.navbar-nav .nav-item.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+/* Logout button style */
+.navbar-nav .nav-item.logout .nav-link {
+    background-color: #d9534f;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    text-align: center;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+/* Logout hover effect */
+.navbar-nav .nav-item.logout .nav-link:hover {
+    background-color: #c9302c !important;
+    color: white !important;
+    text-decoration: underline;
+}
+
+/* Shift main content right */
+.Heading,
+.Devices {
+    margin-left: 250px;  
+    padding: 20px;
+    text-align: center;
+}
+
+/* Heading style */
+.Heading h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1f7e8c;
+}
+
+/* Table container */
+.TableStyle {
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 80%;
+}
+
+/* Table styling */
+.Table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Table headers */
+.Table .Header th {
+    background-color: #1f7e8c;
+    color: white;
+    padding: 10px;
+}
+
+/* Table rows */
+.Table .Row:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Table cells */
+.Table .Cell {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+.message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+  animation: fadeout 2s forwards;
+}
+
+@keyframes fadeout {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+

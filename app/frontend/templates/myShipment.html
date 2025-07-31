@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SCMXPertLite - My Shipment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/static/myShipment.css?v=2" />
+</head>
+<body>
+
+<!-- Sidebar Navbar -->
+<nav class="sidebar">
+  <ul class="navbar-nav">
+    <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link" href="/MyAccount"><i class="fas fa-user-circle"></i> My Account</a></li>
+    <li class="nav-item"><a class="nav-link" href="/shipment"><i class="fa-solid fa-truck-fast"></i> Shipment</a></li>
+    <li class="nav-item"><a class="nav-link" href="/myShipment"><i class="fa-solid fa-cart-arrow-down"></i> My Shipment</a></li>
+    <li class="nav-item">
+      {% if user.role == "Admin" %}
+      <a class="nav-link text-white" href="/deviceData" id="deviceDataBtn">
+        <i class="fas fa-database me-1"></i> Device Data
+      </a>
+      {% else %}
+      <span class="nav-link disabled-nav" style="cursor: not-allowed;">
+        <i class="fas fa-database me-1"></i> Device Data
+      </span>
+      {% endif %}
+    </li>
+    <li class="nav-item mt-auto"><a class="navbar-logout" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</nav>
+
+<!-- Main Content Area -->
+<div class="main-content">
+  <div class="greet">My Shipments</div>
+
+  {% if shipments %}
+    <div class="shipment-container">
+      {% for shipment in shipments %}
+      <div class="shipment-card">
+        <div class="shipment-detail">
+          <div class="field"><span class="label">Shipment Number</span> = {{ shipment.ShipNum }}</div>
+          <div class="field"><span class="label">User Name</span> = {{ shipment.uname }}</div>
+          <div class="field"><span class="label">User Email</span> = {{ shipment.uemail }}</div>
+          <div class="field"><span class="label">Route Details</span> = {{ shipment.RoutDet }}</div>
+          <div class="field"><span class="label">Device</span> = {{ shipment.Device }}</div>
+          <div class="field"><span class="label">PO Number</span> = {{ shipment.PoNum }}</div>
+          <div class="field"><span class="label">NDC Number</span> = {{ shipment.NdcNum }}</div>
+          <div class="field"><span class="label">No. of Goods</span> = {{ shipment.SeNumOfGoods }}</div>
+          <div class="field"><span class="label">Container Number</span> = {{ shipment.ContNum }}</div>
+          <div class="field"><span class="label">Goods Type</span> = {{ shipment.GoodType }}</div>
+          <div class="field"><span class="label">Expected Delivery Date</span> = {{ shipment.ExpDelDate }}</div>
+          <div class="field"><span class="label">Delivery Number</span> = {{ shipment.DelNum }}</div>
+          <div class="field"><span class="label">Batch ID</span> = {{ shipment.BatchId }}</div>
+          <div class="field"><span class="label">Shipment Description</span> = {{ shipment.ShipDes }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-shipments">No shipments found.</div>
+  {% endif %}
+</div>
+
+<script>
+  // Session timeout logic (10 minutes)
+  let sessionTimeout = 10 * 60 * 1000;
+  let timeout;
+
+  function startSessionTimeout() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => window.location.href = "/logout", sessionTimeout);
+  }
+
+  document.addEventListener("mousemove", startSessionTimeout);
+  document.addEventListener("keydown", startSessionTimeout);
+
+  // Show message if user clicks Device Data without permission
+  document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.getElementById("deviceDataBtn");
+    if (!btn) return;
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const message = document.createElement("div");
+      message.className = "message";
+      message.textContent = "You do not have permission to access Device Data.";
+      const container = document.querySelector(".navbar-nav").children[4];
+      container.appendChild(message);
+      setTimeout(() => container.removeChild(message), 2000);
+    });
+  });
+</script>
+
+</body>
+</html>

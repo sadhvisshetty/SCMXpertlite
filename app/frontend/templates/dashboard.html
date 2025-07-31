@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCMXPertLite-Dashboard</title>
+
+  <!-- Bootstrap and Font Awesome -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Scripts (deferred for performance) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" defer></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" defer></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../static/dashboard.css" />
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <nav class="navbar" id="sidebar" aria-label="Sidebar navigation">
+    <button type="button" class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link text-white" href="/dashboard"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="/MyAccount"><i class="fas fa-user-circle me-1"></i> My Account</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="/shipment"><i class="fa-solid fa-truck-fast"></i> Shipment</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="/myShipment"><i class="fa-solid fa-cart-arrow-down"></i> My Shipment</a></li>
+
+      {% if user.role == "Admin" %}
+        <li class="nav-item"><a class="nav-link text-white" href="/deviceData"><i class="fas fa-database me-1"></i> Device Data</a></li>
+      
+      {% else %}
+        <button
+  type="button" style="cursor: not-allowed; background-color: transparent;
+           color: rgba(255, 255, 255, 0.5) !important; "
+  class="nav-link text-muted btn-disabled"
+  aria-disabled="true"
+  id="deviceDataBtn"
+  tabindex="0"
+  
+>
+  <i class="fas fa-database me-1" ></i>Device Data
+</button>
+      {% endif %}
+    </ul>
+
+    <a href="/logout" class="navbar-logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main">
+    <section class="greet">Hi {{ user.username }}, Welcome to SCMXPertLite</section>
+    <div class="image">
+      <img src="/images/dashboard.jpg" alt="Background" />
+    </div>
+  </main>
+
+  <!-- JavaScript -->
+  <script>
+    const sessionTimeout = 10 * 60 * 1000; 
+    let timeout;
+
+    function startSessionTimeout() {
+      clearTimeout(timeout);
+      timeout = setTimeout(logout, sessionTimeout);
+    }
+
+    function logout() {
+      window.location.href = "/logout";
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("main");
+      if (sidebar && main) {
+        sidebar.classList.toggle("collapsed");
+        main.classList.toggle("full");
+      }
+    }
+
+    async function fetchShipments() {
+      try {
+        const response = await fetch('/shipment'); 
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const shipments = await response.json();
+        console.log('Shipments:', shipments);
+      } catch (error) {
+        console.error('Failed to fetch shipments:', error);
+      }
+    }
+
+    function showMessage() {
+      const existing = document.querySelector(".message");
+      if (existing) return;
+
+      const message = document.createElement("div");
+      message.className = "message";
+      message.textContent = "You do not have permission to access Device Data.";
+
+      const navItems = document.querySelectorAll(".navbar-nav .nav-item");
+      if (navItems.length >= 5) {
+        navItems[4].appendChild(message);
+        setTimeout(() => {
+          if (message.parentNode) {
+            message.parentNode.removeChild(message);
+          }
+        }, 2000);
+      }
+    }
+
+    document.addEventListener("mousemove", startSessionTimeout);
+    document.addEventListener("keydown", startSessionTimeout);
+
+    window.addEventListener("load", () => {
+      fetchShipments();
+      startSessionTimeout();
+    });
+  </script>
+</body>
+</html>

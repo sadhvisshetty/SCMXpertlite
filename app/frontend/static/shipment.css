@@ -1,0 +1,182 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Sidebar Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #1f7e8c;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1000;
+  padding: 0;
+}
+
+.navbar.collapsed {
+  width: 60px;
+}
+
+.toggle-btn {
+  color: white;
+  font-size: 1.5rem;
+  text-align: right;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: none;
+}
+
+/* Nav List */
+.navbar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.navbar-nav .nav-item {
+  padding: 0;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.navbar-nav .nav-link {
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: white !important;
+  font-weight: 500;
+  font-size: 1.1rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  text-align: left;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-nav .nav-link i {
+  margin-right: 10px;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: white !important;
+  color: #1f7e8c !important;
+}
+
+/* Disabled Link Styling */
+.navbar-nav .btn-disabled {
+  background-color: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed;
+  text-align: left;
+  padding: 15px 20px;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Logout Button */
+.navbar-logout {
+  background-color: #d9534f;
+  color: white !important;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 15px 20px;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  display: block;
+  text-decoration: underline;
+  border-radius: 0;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-logout:hover {
+  background-color: #c9302c;
+}
+
+/* Greet Section */
+.greet {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: black;
+  text-align: center;
+  padding: 30px 0;
+  height: 90px;
+  flex-shrink: 0;
+  margin-left: 250px;
+}
+
+/* Main Form Container */
+.container {
+  margin-left: 250px;
+  padding-top: 30px;
+  background: linear-gradient(to right, #fbe6e6, #c5d8f5c2);
+  border-radius: 10px;
+  margin-top: 100px;
+  margin-left: 500px;
+  margin-bottom: 300px;
+
+}
+
+
+/* Fade Message */
+.message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+  animation: fadeout 2s forwards;
+}
+
+@keyframes fadeout {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .navbar.collapsed {
+    height: auto;
+  }
+
+  .toggle-btn {
+    display: block;
+  }
+
+  .greet {
+    margin-left: 0;
+    font-size: 1.3rem;
+    padding: 15px;
+    height: auto;
+  }
+
+  .container {
+    margin-left: 0;
+    padding-top: 20px;
+  }
+}
+#b-button  .btn{
+  margin: 0 200px;
+
+}
+
+#b-button :hover {
+  text-decoration: underline;
+}

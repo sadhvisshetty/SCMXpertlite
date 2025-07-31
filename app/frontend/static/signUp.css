@@ -1,0 +1,158 @@
+/* Reset & base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e8f0ed; 
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.text-danger {
+    color: red;
+}
+
+
+/* Container centering */
+.signup-container {
+    background-color: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08); 
+    max-width: 450px;
+    width: 90%;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* Form headings */
+.form-box h2, .form-box h4 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.form-box h2 {
+    color: black; 
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.form-box h4 {
+    color: black;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+label {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+/* Inputs */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    padding: 12px 14px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+    color: #1f2937;
+    width: 100%;
+}
+
+input::placeholder {
+    color: #9ca3af;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1f7e8c;
+    box-shadow: 0 0 0 3px rgba(31, 126, 140, 0.25);
+}
+
+/* Validation messages */
+.validation-message {
+    font-size: 0.85rem;
+    color: #8B0000;
+    margin-top: 4px;
+    display: none;
+}
+
+/* Terms checkbox */
+.form-check {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.form-check-label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+/* Terms error message */
+#termsError {
+    margin-left: 28px;
+}
+
+/* Button */
+.btn {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #1f7e8c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: background-color 0.25s ease;
+}
+
+.btn:hover {
+    background-color: #165f66;
+}
+
+/* Sign-in link */
+.signin-link {
+    color: #1f7e8c;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signin-link:hover {
+    color: #174d80;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .signup-container {
+        padding: 30px 20px;
+        width: 95%;
+    }
+}
