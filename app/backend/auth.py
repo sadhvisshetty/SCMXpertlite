@@ -37,7 +37,7 @@ async def get_current_user_from_cookie(request: Request):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
-        return user  # 👈 now includes role and other info
+        return user  
 
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")

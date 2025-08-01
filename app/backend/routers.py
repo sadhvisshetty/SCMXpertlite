@@ -77,7 +77,7 @@ async def get_my_shipment(request: Request, user=Depends(get_current_user_from_c
     cursor = shipment_collection.find({"uemail": user_email})
     shipments = []
     async for shipment in cursor:
-        shipment["_id"] = str(shipment["_id"])  # Convert ObjectId to str for template
+        shipment["_id"] = str(shipment["_id"])  
         shipments.append(shipment)
 
     headers = [
@@ -101,7 +101,7 @@ async def get_my_shipment(request: Request, user=Depends(get_current_user_from_c
 @router.post("/shipment")
 async def create_shipment(shipment: Shipment, user=Depends(RoleChecker(["Admin", "User"]))):
     
-    shipment_data = shipment.model_dump()  # Convert Pydantic model to dict
+    shipment_data = shipment.model_dump()  
     
     # Inject logged-in user's info BEFORE inserting
     shipment_data["uname"] = user.get("username")  
@@ -163,13 +163,13 @@ async def get_my_account_page(request: Request, user=Depends(get_current_user_fr
     if "_id" in user:
         user["_id"] = str(user["_id"])
 
-    # 🔍 DEBUG: Print all shipments in DB
+    #  DEBUG: Print all shipments in DB
     print("=== ALL SHIPMENTS ===")
     cursor = shipment_collection.find({})
     async for doc in cursor:
         print(doc)
 
-    # 🧮 Count how many shipments belong to this user
+    #  Count how many shipments belong to this user
     user_email = user.get("email")
     shipment_count = await shipment_collection.count_documents({"uemail": user_email})
     print(f"Shipment count for {user_email}:", shipment_count)

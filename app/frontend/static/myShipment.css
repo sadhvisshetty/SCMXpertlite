@@ -13,6 +13,7 @@
     padding: 0;
 }
 
+
 .navbar-nav {
     list-style: none;
     padding: 0;
@@ -48,7 +49,7 @@
 
 .disabled-nav {
     color: rgba(255, 255, 255, 0.5);
-    pointer-events: none;
+    pointer-events: visible;
 }
 
 .navbar-logout {

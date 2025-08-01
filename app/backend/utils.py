@@ -12,13 +12,6 @@ env_path = Path(__file__).parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
 
-# # Debug prints to confirm environment variables are loaded
-# print("DEBUG: SECRET_KEY =", os.getenv("SECRET_KEY"))
-# print("DEBUG: MAIL_USERNAME =", os.getenv("MAIL_USERNAME"))
-# print("DEBUG: MAIL_PASSWORD =", os.getenv("MAIL_PASSWORD"))
-# print("DEBUG: MAIL_FROM =", os.getenv("MAIL_FROM"))
-
-
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
