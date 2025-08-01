@@ -22,12 +22,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # Get the current user based on the JWT token
 
-
-SECRET_KEY = "9c4ed1d31012d8a3e26c1a7121fa982aed5f403020fb23ae4498e213e6b735b2"
-ALGORITHM = "HS256"
-
-
-
 async def get_current_user_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
