@@ -1,7 +1,6 @@
 import os
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-
 from .main import app as main_app  
 
 current_dir = os.path.dirname(os.path.abspath(__file__))

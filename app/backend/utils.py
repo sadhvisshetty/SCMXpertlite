@@ -4,10 +4,10 @@ from datetime import datetime, timedelta, timezone
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from fastapi_mail import FastMail, ConnectionConfig
+from fastapi_mail import FastMail, ConnectionConfig,MessageSchema
 from typing import Optional
 import random
-from fastapi_mail import MessageSchema
+
 
 
 

@@ -4,11 +4,7 @@ from jose import JWTError, jwt
 from .db import user_collection
 import os
 from dotenv import load_dotenv
-from fastapi import Request, HTTPException, Depends
-from jose import JWTError, jwt
 
-from fastapi import Request, HTTPException
-from .db import user_collection
 
 load_dotenv()
 

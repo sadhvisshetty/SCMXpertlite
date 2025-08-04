@@ -1,26 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Form, BackgroundTasks
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse,HTMLResponse
 from pydantic import EmailStr
-from datetime import timedelta
+from datetime import timedelta,datetime,timezone
 from bson import ObjectId
 from .models import User, Shipment, DeviceData
 from .db import user_collection, shipment_collection, device_collection
 from .auth import get_current_user_from_cookie, RoleChecker
 from .utils import hash_password, verify_password, create_access_token, generate_otp, MessageSchema
-from .forgot import router as forgot_router
 from .forgot import router as forgot_router, send_otp_email,send_account_deleted_email, EMAIL_ADDRESS, EMAIL_PASSWORD
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from fastapi.responses import HTMLResponse
-from bson import ObjectId
 from bson.errors import InvalidId
-from datetime import datetime, timezone
-from .models import Shipment
-
-
-
-
 
 
 router = APIRouter()
