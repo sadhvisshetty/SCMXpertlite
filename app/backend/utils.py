@@ -4,15 +4,22 @@ from datetime import datetime, timedelta, timezone
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
-from pydantic import EmailStr
+from fastapi_mail import FastMail, ConnectionConfig
+from typing import Optional
+import random
+from fastapi_mail import MessageSchema
 
-# Load .env file
+
+
+
+# Load .env file from parent directory
 env_path = Path(__file__).parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
-
 SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY not set in environment variables")
+
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,12 +30,11 @@ def hash_password(password: str) -> str:
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
-def create_access_token(data: dict, expires_delta: timedelta):
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + expires_delta 
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 # Configure FastMail connection
 conf = ConnectionConfig(
@@ -45,6 +51,5 @@ conf = ConnectionConfig(
 
 fm = FastMail(conf)
 
-def generate_otp():
-    import random
+def generate_otp() -> str:
     return str(random.randint(100000, 999999))

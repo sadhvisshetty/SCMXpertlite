@@ -99,7 +99,7 @@
             document.getElementById("output").innerHTML = "";
             document.getElementById("captchaDisplay").innerHTML = "";
 
-            const charsArray = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$";
+            const charsArray = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$";
             const captcha = [];
             while (captcha.length < 7) {
                 const index = Math.floor(Math.random() * charsArray.length);
@@ -186,7 +186,7 @@
             }
 
                 const data = await response.json();
-                // localStorage.setItem('token', data.access_token);
+                
 
                 // Redirect to dashboard page after successful login
                 window.location.href = '/dashboard';

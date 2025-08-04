@@ -1,17 +1,18 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from .db import user_collection
 from .utils import hash_password
 import random
 import string
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import traceback
 import os
 from dotenv import load_dotenv
 from email.message import EmailMessage
 
+templates = Jinja2Templates(directory="../frontend/templates")
+from fastapi.responses import JSONResponse
 
 load_dotenv()
 
@@ -23,23 +24,16 @@ LOGIN_TEMPLATE = "Login.html"
 
 router = APIRouter()
 
-# Setup Jinja2 templates
-templates = Jinja2Templates(directory="../frontend/templates")
-
 # In-memory store for OTPs
 otp_store = {}
 
-# OTP generator
 def generate_otp(length=6):
     return ''.join(random.choices(string.digits, k=length))
 
-# Send OTP email using Gmail SMTP
 def send_otp_email(recipient_email: str, otp: str):
-    from email.message import EmailMessage
-
     msg = EmailMessage()
     msg.set_content(f"Your OTP is: {otp}")
-    msg["Subject"] = "Your SCMXpert OTP Code"
+    msg["Subject"] = "Your SCMXpert OTP Code for changing the Password"
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = recipient_email
 
@@ -64,6 +58,7 @@ def send_account_deleted_email(recipient_email: str):
 
     Regards,  
     SCMXpert Team
+    Support - sadhvisshetty03@gmail.com
     """
 
     msg = EmailMessage()
@@ -83,30 +78,52 @@ def send_account_deleted_email(recipient_email: str):
         traceback.print_exc()
 
 
-@router.post("/forgotpass/request")
+
+@router.post("/forgotpass/request", response_class=HTMLResponse)
 async def forgot_password_request(request: Request, email: str = Form(...)):
+    try:
+        user = await user_collection.find_one({"email": email})
 
-    user = await user_collection.find_one({"email": email})
+        if not user:
+            # Detect AJAX request
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JSONResponse(status_code=400, content={"error": "Email not registered."})
 
-    if not user:
+            return templates.TemplateResponse(FORGOT_PASSWORD_TEMPLATE, {
+                "request": request,
+                "detail": "Email not registered.",
+                "email": email
+            })
+
+        otp = generate_otp()
+        otp_store[email] = otp
+        send_otp_email(email, otp)
+
+        # Return JSON if called from JS
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JSONResponse(content={"message": f"OTP sent to {email} successfully."})
+
+        # Else fallback to HTML page
         return templates.TemplateResponse(FORGOT_PASSWORD_TEMPLATE, {
             "request": request,
-            "detail": "Email not registered."
+            "message": f"OTP sent to {email} successfully.",
+            "email": email
         })
 
-    otp = generate_otp()
-    otp_store[email] = otp
-    print(f"Generated OTP for {email}: {otp}")
+    except Exception as e:
+        print("Exception in forgot_password_request:", e)
+        traceback.print_exc()
 
-    send_otp_email(email, otp)
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JSONResponse(status_code=500, content={"error": "Internal server error. Please try again later."})
 
-    return templates.TemplateResponse(FORGOT_PASSWORD_TEMPLATE, {
-        "request": request,
-        "message": f"OTP sent to {email}.",
-        "email": email
-    })
+        return templates.TemplateResponse(FORGOT_PASSWORD_TEMPLATE, {
+            "request": request,
+            "detail": "Internal server error. Please try again later.",
+            "email": email
+        })
 
-# Reset password after OTP verification
+
 @router.post("/forgotpass")
 async def reset_password(
     request: Request,
@@ -115,34 +132,42 @@ async def reset_password(
     cnfpassword: str = Form(...),
     otp: str = Form(...)
 ):
-    # Validate OTP
     if email not in otp_store or otp_store[email] != otp:
-        return templates.TemplateResponse(FORGOT_PASSWORD_TEMPLATE, {
-            "request": request,
-            "email": email,
-            "detail": "Invalid OTP."
-        })
+        return HTMLResponse(
+            """
+            <script>
+                alert('Invalid OTP. Please try again.');
+                window.history.back(); // Redirects back to the form
+            </script>
+            """
+        )
 
-    # Validate password confirmation
+
     if password != cnfpassword:
-        return templates.TemplateResponse(FORGOT_PASSWORD_TEMPLATE, {
-            "request": request,
-            "email": email,
-            "detail": "Passwords do not match."
-        })
+        return HTMLResponse(
+        """
+        <script>
+            alert('Passwords do not match.');
+            window.history.back();
+        </script>
+        """
+    )
 
-    # Hash password and update in DB
+
     hashed_password = hash_password(password)
     await user_collection.update_one(
         {"email": email},
         {"$set": {"password": hashed_password}}
     )
 
-    # Remove OTP after successful reset
     otp_store.pop(email, None)
 
-    # Redirect or show login page with success message
-    return templates.TemplateResponse(LOGIN_TEMPLATE, {
-        "request": request,
-        "message": "Password reset successful. Please log in."
-    })
+    # Return JS alert and redirect to login
+    return HTMLResponse(
+        """
+        <script>
+            alert('Your password has been changed successfully.');
+            window.location.href = '/Login'; 
+        </script>
+        """
+    )

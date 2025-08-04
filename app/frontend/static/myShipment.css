@@ -3,7 +3,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 260px;
+    width: 250px;
     height: 99.5vh;
     background-color: #1f7e8c;
     display: flex;
@@ -25,6 +25,7 @@
 
 .nav-item {
     margin-bottom: 10px;
+    font-family: sans-serif;
 }
 
 .nav-link {
@@ -35,6 +36,9 @@
     font-size: 1.1rem;
     text-decoration: none;
     transition: background 0.3s;
+}
+.nav-item .nav-link {
+    padding-left: 20px !important;
 }
 
 .nav-link i {
@@ -77,14 +81,14 @@
     color: black;
     text-align: center;
     padding: 30px 59px 30px;
-    margin-left: -27px;
+    margin-left: -39px;
     margin-top: -30px;
     margin-right: -31px;
 }
 
 /* Main Content */
 .main-content {
-    margin-left: 260px;
+    margin-left: 251px;
     padding: 20px 30px;
     background-color: #e8f0f0;
     min-height: 100vh;

@@ -81,7 +81,7 @@ async def get_dashboard(request: Request, user=Depends(get_current_user_from_coo
 
 @app.get("/myShipment", response_class=HTMLResponse)
 async def get_my_shipment(request: Request, user=Depends(get_current_user_from_cookie)):
-    # Sample data for demonstration, replace with your actual data fetching logic
+    
     headings = ["Shipment ID", "Status", "Date", "Destination"]
     data = [
         ["001", "In Transit", "2025-07-28", "New York"],

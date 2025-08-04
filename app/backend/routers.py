@@ -244,3 +244,5 @@ async def signup_request_otp(request: Request, email: str = Form(...)):
         "message": "OTP sent to your email.",
         "email": email
     })
+
+
