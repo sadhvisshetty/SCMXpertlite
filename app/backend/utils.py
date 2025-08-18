@@ -9,9 +9,6 @@ from typing import Optional
 import random
 
 
-
-
-
 # Load .env file from parent directory
 env_path = Path(__file__).parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)

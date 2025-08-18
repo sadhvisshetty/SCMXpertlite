@@ -10,6 +10,7 @@
 </head>
 
 <body onload="createCaptcha()">
+    <body style="background-image: url('/images/background.jpg');"></body>
     <div class="container">
         <div class="animated-edge top-edge"></div>
         <div class="animated-edge bottom-edge"></div>
@@ -26,7 +27,7 @@
                 <form id="loginForm" action="#" method="post">
                     <div class="form-group">
                         <label for="email">Email Address<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" onkeyup="emailcheck()" required />
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" onkeyup="emailcheck()" required />
                     </div>
                     <div id="wrem"></div>
                     <div class="form-group">
@@ -62,7 +63,7 @@
                         <a href="/forgot" class="forgot-password">Forgot Password? (click here to reset the password)</a>
                     </div>
                     <div class="form-group">
-                        <a href="/signUp" class="signup-link">Not signed up yet? Sign Up</a>
+                        <a href="/signUp" class="signup-link">Don't have an account? Sign Up</a>
                     </div>
                     <div class="form-group">
                         <div class="btn-container">
@@ -97,14 +98,15 @@
         function createCaptcha() {
             document.getElementById("captchaTextBox").value = "";
             document.getElementById("output").innerHTML = "";
-            document.getElementById("captchaDisplay").innerHTML = "";
+
+            const captchaContainer = document.getElementById("captchaDisplay");
+            captchaContainer.innerHTML = "";
 
             const charsArray = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$";
             const captcha = [];
             while (captcha.length < 7) {
                 const index = Math.floor(Math.random() * charsArray.length);
-                if (captcha.indexOf(charsArray[index]) === -1)
-                    captcha.push(charsArray[index]);
+                captcha.push(charsArray[index]); 
             }
 
             code = captcha.join("");
@@ -118,8 +120,9 @@
             ctx.font = "20px Arial";
             ctx.fillStyle = "black";
             ctx.strokeText(code, 10, 25);
+            ctx.fillText(code, 10, 25);
 
-            document.getElementById("captchaDisplay").appendChild(canvas);
+            captchaContainer.appendChild(canvas);
         }
 
         function validateCaptcha() {
@@ -160,7 +163,7 @@
             }
         });
 
-        // New code: handle login form submit via fetch and redirect on success
+     
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -177,19 +180,16 @@
                 }),
                 credentials: 'include'  
             });
+            
+            const data = await response.json();
 
-                if (!response.ok) {
-                const data = await response.json();
+            if (!response.ok) {
                 console.error('Login failed:', data); 
                 alert('Login failed: ' + (data.detail || JSON.stringify(data)));
                 return;
             }
-
-                const data = await response.json();
-                
-
-                // Redirect to dashboard page after successful login
-                window.location.href = '/dashboard';
+        
+            window.location.href = '/dashboard';
 
             } catch (error) {
                 alert('Error during login, please try again.');

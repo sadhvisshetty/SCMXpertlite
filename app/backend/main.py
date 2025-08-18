@@ -6,9 +6,10 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from .auth import get_current_user_from_cookie
 from .routers import router
+from .config import templates
+import uvicorn
 
 app = FastAPI()
-
 
 
 # CORS middleware setup
@@ -40,12 +41,11 @@ if not os.path.isdir(image_dir):
 
 app.mount("/images", StaticFiles(directory=image_dir), name="images")
 
-# Include your routers
+# Include routers
 app.include_router(router)
 
 
 # Routes
-
 @app.get("/forgot", response_class=HTMLResponse)
 async def get_forgot_password(request: Request):
     return templates.TemplateResponse("forgotPassword.html", {"request": request})
@@ -53,7 +53,7 @@ async def get_forgot_password(request: Request):
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    return templates.TemplateResponse("Login.html", {"request": request})
+    return templates.TemplateResponse("Home.html", {"request": request})
 
 
 @app.get("/Login", response_class=HTMLResponse)
@@ -64,7 +64,6 @@ async def get_login(request: Request):
 @app.get("/signUp", response_class=HTMLResponse)
 async def get_signup(request: Request):
     return templates.TemplateResponse("signup.html", {"request": request})
-
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -105,13 +104,16 @@ async def get_my_shipment(request: Request, user=Depends(get_current_user_from_c
 async def get_shipment(request: Request, user=Depends(get_current_user_from_cookie)):
     return templates.TemplateResponse("shipment.html", {"request": request, "user": user})
 
-
-
 @app.get("/logout")
 async def logout():
     response = RedirectResponse(url="/Login")
     # Delete the cookie on logout
     response.delete_cookie(key="access_token")  
     return response
+
+if __name__ == "__main__":
+    
+    uvicorn.run("app.backend.main:app", host="0.0.0.0", port=8000, reload=True)
+
 
 

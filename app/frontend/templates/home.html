@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCMXpertlite - Home</title>
+  <link rel="stylesheet" href="/static/home.css" />
+</head>
+<body style="background-image: url('/images/background.jpg');">
+  <header>
+    <div class="nav-container">
+      <div class="company-logo-name">
+        <img src="/images/logo.png" alt="Company Logo" class="logo" />
+        <div class="company-name">Exafluence</div>
+      </div>
+      <nav>
+        <button onclick="location.href='/Login'">Login</button>
+        <button onclick="location.href='/signUp'">Sign Up</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Welcome to SCMXpertlite</h1>
+    <button id="getStartedBtn">Get Started</button>
+  </main>
+
+  <script>
+    document.getElementById('getStartedBtn').addEventListener('click', function () {
+      window.location.href = '/Login';  
+    });
+  </script>
+</body>
+</html>

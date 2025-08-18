@@ -4,6 +4,31 @@
   padding: 0;
   box-sizing: border-box;
 }
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 60px; 
+  padding: 0 20px;
+  background-color: darkgrey; 
+  width: 100%; 
+}
+
+.company-logo {
+  width: 24px;
+  height: 25px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-right: 10px; 
+}
+
+.company-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: black;
+  font-family: inherit;
+  line-height: 1;
+}
 
 /* Sidebar Navbar */
 .navbar {
@@ -43,22 +68,18 @@
 }
 
 .navbar-nav .nav-item {
-  padding: 0;
   margin-bottom: 10px;
-  width: 100%;
 }
 
 .navbar-nav .nav-link {
   display: block;
-  width: 100%;
   padding: 15px 20px;
   text-decoration: none;
-  color: white !important;
+  color: white;
   font-weight: 500;
   font-size: 1.1rem;
-  background-color: transparent;
+  background: none;
   border: none;
-  border-radius: 0;
   text-align: left;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -72,32 +93,19 @@
   color: #1f7e8c !important;
 }
 
-/* Disabled Link Styling */
-.navbar-nav .btn-disabled {
-  background-color: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.5) !important;
-  cursor: not-allowed;
-  text-align: left;
-  padding: 15px 20px;
-  width: 100%;
-  font-size: 1.1rem;
-  font-weight: 500;
+.text-muted {
+  color: #b2b8bd !important;
 }
 
-/* Logout Button */
 .navbar-logout {
-  background-color: #d9534f;
+  background-color: rgb(228, 24, 24);
   color: white !important;
   font-weight: 600;
   font-size: 1.1rem;
   padding: 15px 20px;
   text-align: center;
-  cursor: pointer;
   width: 100%;
   display: block;
-  text-decoration: underline;
-  border-radius: 0;
   transition: background-color 0.3s ease;
 }
 
@@ -113,25 +121,19 @@
   color: black;
   text-align: center;
   padding: 30px 0;
-  height: 90px;
-  flex-shrink: 0;
   margin-left: 250px;
 }
 
 /* Main Form Container */
 .container {
-  margin-left: 250px;
+  margin-left: 498px;
   padding-top: 30px;
   background: linear-gradient(to right, #fbe6e6, #c5d8f5c2);
   border-radius: 10px;
   margin-top: 100px;
-  margin-left: 500px;
   margin-bottom: 300px;
-
 }
 
-
-/* Fade Message */
 .message {
   color: red;
   font-size: 0.9em;
@@ -144,39 +146,73 @@
   100% { opacity: 0; }
 }
 
+#b-button {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#b-button .btn:hover {
+  text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
-    width: 100%;
-    height: auto;
-    flex-direction: column;
+    width: 60px;
+    align-items: center;
   }
 
-  .navbar.collapsed {
-    height: auto;
+  .navbar-nav .nav-link,
+  .btn-disabled {
+    font-size: 0;
+    padding: 12px 0;
+    text-align: center;
   }
 
-  .toggle-btn {
-    display: block;
+  .navbar-nav .nav-link i,
+  .btn-disabled i {
+    font-size: 1.4rem;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 5px;
+    
+  }
+
+  .navbar-logout {
+    font-size: 0;
+    padding: 10px 0;
+    width: 60px;
+    text-align: center;
+  }
+
+  .navbar-logout i {
+    font-size: 1.4rem;
   }
 
   .greet {
-    margin-left: 0;
-    font-size: 1.3rem;
-    padding: 15px;
-    height: auto;
+    margin-left: 60px;
+    font-size: 1.2rem;
+    padding: 15px 10px;
   }
 
   .container {
-    margin-left: 0;
-    padding-top: 20px;
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    padding: 15px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
-}
-#b-button  .btn{
-  margin: 0 200px;
 
-}
-
-#b-button :hover {
-  text-decoration: underline;
+  #b-button .btn {
+    min-width: 140px;
+    max-width: 100%;
+  }
+  .company-name {
+    display: none;
+  }
 }

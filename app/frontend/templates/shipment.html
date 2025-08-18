@@ -17,6 +17,10 @@
 
 <!-- Navbar -->
 <nav class="navbar">
+  <div class="logo-container">
+      <img src="/images/logo.png" alt="Exafluence Logo" class="company-logo" />
+      <span class="company-name">Exafluence</span>
+    </div>
   <ul class="navbar-nav">
     <li class="nav-item"><a class="nav-link text-white" href="/dashboard"><i class="fa-solid fa-chart-column"></i>Dashboard</a></li>
     <li class="nav-item"><a class="nav-link text-white" href="/MyAccount"><i class="fas fa-user-circle me-1"></i>My Account</a></li>
@@ -33,46 +37,40 @@
   <a href="/logout" class="navbar-logout"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
 </nav>
 
-<!-- Greeting -->
+
 <div class="greet">Hi {{ user.username }}, Welcome to New Shipment</div>
 
-<!-- Shipment Form -->
 <div class="container">
   <div class="content w-100">
     <form id="shipmentForm" class="p-4">
       <div class="form-row">
-        <!-- Shipment Number -->
         <div class="form-group col-md-6">
           <label for="shipmentNumber">Shipment Number<span class="text-danger">*</span></label>
           <input type="text" id="shipmentNumber" class="form-control" required />
           <small id="shipmentError" class="form-text text-danger"></small>
         </div>
-
-        <!-- Container Number -->
         <div class="form-group col-md-6">
           <label for="containerNumber">Container Number<span class="text-danger">*</span></label>
           <input type="text" id="containerNumber" class="form-control" required />
         </div>
 
-        <!-- Route Details -->
         <div class="form-group col-md-6">
           <label for="routeDetails">Route Details<span class="text-danger">*</span></label>
           <select id="routeDetails" class="form-control" required>
             <option value="">Select Route</option>
-            <option value="Chennai-Bangalore">Bengaluru → Chennai</option>
+            <option value="Bengaluru-Chennai">Bengaluru → Chennai</option>
             <option value="Mumbai-Delhi">Mumbai → Delhi</option>
             <option value="Hyderabad-Pune">Hyderabad → Pune</option>
             <option value="Kolkata-Guwahati">Kolkata → Guwahati</option>
-            <option value="Delhi-Dubai">Delhi → Dubai (UAE)</option>
-            <option value="Mumbai-Singapore">Mumbai → Singapore</option>
-            <option value="Chennai-Colombo">Chennai → Colombo</option>
-            <option value="Bangalore-Frankfurt">Bengaluru → Frankfurt</option>
-            <option value="Ahmedabad-Kathmandu">Ahmedabad → Kathmandu</option>
-            <option value="Delhi-NewYork">Delhi → New York</option>
+            <option value="Delhi-Bengaluru">Delhi → Bengaluru</option>
+            <option value="Mumbai-Chennai">Mumbai → Chennai</option>
+            <option value="Kochi-Ahmedabad">Kochi → Ahmedabad</option>
+            <option value="Bengaluru-Mumbai">Bengaluru → Mumbai</option>
+            <option value="Ahmedabad-Gurgoan">Ahmedabad → Gurgoan</option>
+            <option value="Delhi-Hyderabad">Delhi → Hyderabad</option>
           </select>
         </div>
 
-        <!-- Goods Type -->
         <div class="form-group col-md-6">
           <label for="goodsType">Goods Type<span class="text-danger">*</span></label>
           <select id="goodsType" class="form-control" required>
@@ -90,26 +88,23 @@
           </select>
         </div>
 
-        <!-- Device -->
         <div class="form-group col-md-6">
-          <label for="device">Device<span class="text-danger">*</span></label>
+          <label for="device">Device ID<span class="text-danger">*</span></label>
           <select id="device" class="form-control" required>
-            <option value="">Select Device</option>
-            <option value="GPSTracker">GPS Tracker</option>
-            <option value="BarcodeScanner">Barcode Scanner</option>
-            <option value="TemperatureSensor">Temperature Sensor</option>
-            <option value="RFIDReader">RFID Reader</option>
-            <option value="MobileDataTerminal">Mobile Data Terminal</option>
+            <option value="1150">1150</option>
+            <option value="1151">1151</option>
+            <option value="1152">1152</option>
+            <option value="1153">1153</option>
+            <option value="1154">1154</option>
+            <option value="1155">1155</option>
           </select>
         </div>
 
-        <!-- Expected Delivery Date -->
         <div class="form-group col-md-6">
           <label for="expectedDeliveryDate">Expected Delivery Date<span class="text-danger">*</span></label>
           <input type="date" id="expectedDeliveryDate" class="form-control" required />
         </div>
 
-        <!-- Other Fields -->
         <div class="form-group col-md-6"><label for="poNumber">PO Number*</label><input type="text" id="poNumber" class="form-control" required /></div>
         <div class="form-group col-md-6"><label for="deliveryNumber">Delivery Number*</label><input type="text" id="deliveryNumber" class="form-control" required /></div>
         <div class="form-group col-md-6"><label for="ndcNumber">NDC Number*</label><input type="text" id="ndcNumber" class="form-control" required /></div>
@@ -126,31 +121,25 @@
   </div>
 </div>
 
-<!-- JavaScript -->
-<!-- JavaScript -->
 <script>
   console.log("Script loaded");
 
   const shipmentNumInput = document.getElementById('shipmentNumber');
   const shipmentError = document.getElementById('shipmentError');
 
-  // Real-time validation on input
   shipmentNumInput.addEventListener('input', () => {
     const val = shipmentNumInput.value.trim();
 
-    // Only digits allowed (empty allowed while typing)
     if (!/^\d*$/.test(val)) {
       shipmentError.innerHTML = "◉ Shipment Number must be numeric.";
       return;
     }
 
-    // Max 7 digits only
     if (val.length > 7) {
       shipmentError.innerHTML = "◉ Shipment Number cannot exceed 7 digits.";
       return;
     }
 
-    // Clear error if all good
     shipmentError.innerHTML = "";
   });
 
@@ -160,14 +149,12 @@
     const shipmentNum = shipmentNumInput.value.trim();
     shipmentError.innerHTML = "";
 
-    // Final validation: must be exactly 7 digits
     if (!/^\d{7}$/.test(shipmentNum)) {
       shipmentError.innerHTML = "◉ Shipment Number must be exactly 7 digits.";
       shipmentNumInput.focus();
       return;
     }
 
-    // Build the shipment data object
     const data = {
       ShipNum: parseInt(shipmentNum),
       ContNum: parseInt(document.getElementById('containerNumber').value),
@@ -199,7 +186,6 @@
       } else {
         const err = await response.json();
 
-        // Handle detailed validation errors array if present
         if (Array.isArray(err.detail)) {
           const messages = err.detail.map(e => e.msg).join('; ');
           alert('Error: ' + messages);
@@ -212,7 +198,6 @@
     }
   });
 
-  // Block past dates in calendar
   const dateInput = document.getElementById('expectedDeliveryDate');
   const today = new Date().toISOString().split('T')[0];
   dateInput.min = today;

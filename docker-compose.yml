@@ -1,0 +1,71 @@
+version: '3.12'
+
+services:
+
+  scm:
+    image: demo-scm:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+
+  zookeeper:
+    image: bitnami/zookeeper
+    ports:
+      - "2181:2181"
+    depends_on:
+      - scm
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      
+
+  kafka:
+    image: bitnami/kafka:2.8.1-debian-10-r0
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_HEAP_OPTS=-Xmx1G  
+    depends_on:
+      - zookeeper
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  servers:
+    image: demo-servers:latest
+    ports:
+      - "12345:12345"
+    depends_on:
+      - kafka
+      - mongodb
+
+  producer: 
+    build: ./kafka/Producer
+    depends_on:
+      - servers
+      - kafka
+      - mongodb
+    environment:
+      - HOST=servers
+      - PORT=12345
+      - BOOTSTRAP_SERVERS=kafka:9092
+
+  consumer:
+    build: ./kafka/Consumer
+    depends_on:
+      - producer
+      - kafka
+      - mongodb
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - MONGODB_DATABASE=mydatabase
+      - MONGODB_URI=mongodb+srv://ssadhvishetty1703:X7L9YuYaYGaQQk13@cluster0.vlfvstx.mongodb.net/
+
+volumes:
+  mongodb_data:

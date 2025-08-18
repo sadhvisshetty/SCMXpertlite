@@ -12,6 +12,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from bson.errors import InvalidId
+from .config import templates
 
 
 router = APIRouter()
@@ -62,7 +63,7 @@ async def login(request: Request, email: str = Form(...), password: str = Form(.
 
 @router.get("/myShipment", response_class=HTMLResponse)
 async def get_my_shipment(request: Request, user=Depends(get_current_user_from_cookie)):
-    from .main import templates 
+    
     user_email = user.get("email")
 
     cursor = shipment_collection.find({"uemail": user_email})
@@ -235,5 +236,38 @@ async def signup_request_otp(request: Request, email: str = Form(...)):
         "message": "OTP sent to your email.",
         "email": email
     })
+@router.get("/deviceData", response_class=HTMLResponse)
+async def show_device_data(request: Request, user=Depends(get_current_user_from_cookie)):
+    if not user or user.get("role") != "Admin":
+        return templates.TemplateResponse("page_not_found.html", {"request": request, "message": "Access Denied"})
 
+    cursor = device_collection.find().sort("_id", -1).limit(50)
+    devices_raw = []
+    async for doc in cursor:
+        devices_raw.append(doc)
+
+    devices = []
+    device_ids_set = set()
+
+    for d in devices_raw:
+        device = {
+            "deviceId": d.get("Device_Id", ""),  
+            "batteryLevel": d.get("Battery_Level", ""),
+            "temperature": d.get("First_Sensor_temperature", ""),
+            "routeFrom": d.get("Route_From", ""),
+            "routeTo": d.get("Route_To", ""),
+            "timestamp": d.get("Time_stamp", "")
+        }
+        devices.append(device)
+        if device["deviceId"]:
+            device_ids_set.add(device["deviceId"])
+
+    device_ids = sorted(device_ids_set)
+
+    return templates.TemplateResponse("deviceData.html", {
+        "request": request,
+        "user": user,
+        "devices": devices,
+        "device_ids": device_ids
+    })
 

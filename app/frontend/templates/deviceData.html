@@ -3,45 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>SCMXPertLite-Device Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="../static/deviceData.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
 <body>
 
   <!-- Sidebar Navigation -->
   <nav class="navbar" aria-label="Sidebar Navigation">
+    <div class="logo-container">
+      <img src="/images/logo.png" alt="Exafluence Logo" class="company-logo" />
+      <span class="company-name">Exafluence</span>
+    </div>
+
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="/dashboard">
-          <i class="fa-solid fa-chart-column"></i> Dashboard
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/MyAccount">
-          <i class="fas fa-user-circle me-1"></i> My Account
-        </a>
-      </li>
-      
-      <li class="nav-item">
-        <a class="nav-link" href="/shipment">
-          <i class="fa-solid fa-truck-fast"></i> Shipment
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/myShipment">
-          <i class="fa-solid fa-cart-arrow-down"></i> My Shipment
-        </a>
-      </li>
+      <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/MyAccount"><i class="fas fa-user-circle me-1"></i> My Account</a></li>
+      <li class="nav-item"><a class="nav-link" href="/shipment"><i class="fa-solid fa-truck-fast"></i> Shipment</a></li>
+      <li class="nav-item"><a class="nav-link" href="/myShipment"><i class="fa-solid fa-cart-arrow-down"></i> My Shipment</a></li>
 
       {% if user.role == "Admin" %}
-        <li class="nav-item">
-          <a class="nav-link" href="/deviceData">
-            <i class="fas fa-database me-1"></i> Device Data
-          </a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/deviceData"><i class="fas fa-database me-1"></i> Device Data</a></li>
       {% else %}
         <li class="nav-item">
           <button type="button" class="nav-link btn btn-link text-muted p-0" onclick="showMessage()" aria-disabled="true" style="cursor: not-allowed;">
@@ -50,66 +34,97 @@
         </li>
       {% endif %}
 
-      <li class="nav-item logout">
-        <a class="nav-link" href="/logout">
-          <i class="fas fa-sign-out-alt me-1"></i> Logout
-        </a>
-      </li>
+      <li class="nav-item logout"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
     </ul>
   </nav>
 
-  <!-- Heading -->
+
   <header class="Heading">
     <h1 style="color: black;">Device Data Stream</h1>
   </header>
 
-  <!-- Table Section -->
   <section class="Devices">
     <div class="TableStyle">
+      <div style="margin-bottom: 20px;">
+        <label for="deviceId" style="font-weight: bold; font-size: 25px;">Select Device ID: </label>
+        <select id="deviceId">
+          <option value="">-- Select --</option>
+          {% for id in device_ids %}
+            <option value="{{ id }}">{{ id }}</option>
+          {% endfor %}
+        </select>
+        <button id="getDataBtn" class="btn btn-primary" style="margin-left: 10px;">Get Device Data</button>
+      </div>
+
       <table class="Table">
-        <thead><tr><th></th></tr></thead>
-        <tbody>
-          <!-- Data rows go here dynamically -->
+        <thead class="Header">
+          <tr>
+            <th>Device Id</th>
+            <th>Battery Level</th>
+            <th>Temperature</th>
+            <th>Route From</th>
+            <th>Route To</th>
+          
+          </tr>
+        </thead>
+        <tbody id="deviceDataBody">
+          {% for d in devices %}
+          <tr data-device-id="{{ d.deviceId }}">
+            <td>{{ d.deviceId }}</td>
+            <td>{{ d.batteryLevel }}</td>
+            <td>{{ d.temperature }}</td>
+            <td>{{ d.routeFrom }}</td>
+            <td>{{ d.routeTo }}</td>
+        
+          </tr>
+          {% endfor %}
+          {% if devices|length == 0 %}
+          <tr><td colspan="6" class="text-center">No device data available.</td></tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- JavaScript -->
+  <!-- JS -->
   <script>
-    const sessionTimeout = 10 * 60 * 1000; 
-    let timeout;
-
-    function startSessionTimeout() {
-      clearTimeout(timeout);
-      timeout = setTimeout(logout, sessionTimeout);
-    }
-
-    function logout() {
-      window.location.href = "/logout";
-    }
-
-    document.addEventListener("mousemove", startSessionTimeout);
-    document.addEventListener("keydown", startSessionTimeout);
-    startSessionTimeout();
-
     function showMessage() {
       if (document.querySelector(".message")) return;
-
       const message = document.createElement("div");
       message.className = "message";
       message.textContent = "You do not have permission to access Device Data.";
-
       const navItems = document.querySelectorAll(".navbar-nav .nav-item");
       if (navItems.length >= 5) {
         navItems[4].appendChild(message);
         setTimeout(() => {
-          if (message.parentNode) {
-            message.parentNode.removeChild(message);
-          }
+          if (message.parentNode) message.parentNode.removeChild(message);
         }, 2000);
       }
     }
+
+    function displayDeviceData(deviceId) {
+      const rows = document.querySelectorAll("#deviceDataBody tr");
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        if (!deviceId || row.getAttribute("data-device-id") === deviceId) {
+          row.style.display = "";
+          visibleCount++;
+        } else {
+          row.style.display = "none";
+        }
+      });
+
+      if (visibleCount === 0) {
+        const tbody = document.getElementById("deviceDataBody");
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center">No data found for device ID ${deviceId}</td></tr>`;
+      }
+    }
+
+    document.getElementById("getDataBtn").addEventListener("click", () => {
+      const selectedId = document.getElementById("deviceId").value;
+      displayDeviceData(selectedId);
+    });
   </script>
 
 </body>

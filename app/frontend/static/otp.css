@@ -15,7 +15,6 @@ body {
     background-color: #e8f0ed;
 }
 
-/* OTP input fields */
 input[type="text"] {
     width: 100%;
     margin: 16px 0;
@@ -33,7 +32,6 @@ input[type="text"]:focus {
     outline: none;
 }
 
-/* Header styling */
 .Header {
     margin-top: 3%;
     background: linear-gradient(90deg, #1f7e8c, #0d3b66);
@@ -48,7 +46,6 @@ input[type="text"]:focus {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Primary buttons */
 .button-signup,
 .button-clear {
     padding: 14px 36px;
@@ -61,8 +58,6 @@ input[type="text"]:focus {
     transition: background-color 0.25s ease, transform 0.2s ease;
     min-width: 140px;
 }
-
-/* Submit button */
 .button-signup {
     background-color: #1f7e8c;
 }
@@ -73,7 +68,6 @@ input[type="text"]:focus {
     transform: translateY(-1px);
 }
 
-/* Prevent blue background on click */
 .button-signup:focus,
 .button-signup:active,
 .button-signup:focus:active {
@@ -83,7 +77,6 @@ input[type="text"]:focus {
     outline: none !important;
 }
 
-/* Reset button */
 .button-clear {
     background-color: #1f7e8c;
 }
@@ -94,7 +87,6 @@ input[type="text"]:focus {
     transform: translateY(-1px);
 }
 
-/* Prevent blue background on click for clear button too */
 .button-clear:focus,
 .button-clear:active,
 .button-clear:focus:active {
@@ -104,7 +96,6 @@ input[type="text"]:focus {
     outline: none !important;
 }
 
-/* Center the buttons */
 .btn-container {
     display: flex;
     justify-content: center;
@@ -120,7 +111,6 @@ input[type="text"]:focus {
     color: #cc1f1f;
 }
 
-/* Clean link styles */
 a {
     color: inherit;
     text-decoration: none;

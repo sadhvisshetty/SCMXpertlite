@@ -12,8 +12,29 @@
     z-index: 1000;
     padding: 0;
 }
-
-
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 60px; 
+  padding: 0 20px;
+  background-color: darkgrey; 
+  width: 100%; 
+}
+.company-logo {
+  width: 24px;
+  height: 25px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-right: 10px; 
+}
+.company-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: black;
+  font-family: inherit;
+  line-height: 1;
+}
 .navbar-nav {
     list-style: none;
     padding: 0;
@@ -22,12 +43,10 @@
     display: flex;
     flex-direction: column;
 }
-
 .nav-item {
     margin-bottom: 10px;
     font-family: sans-serif;
 }
-
 .nav-link {
     display: flex;
     align-items: center;
@@ -40,24 +59,20 @@
 .nav-item .nav-link {
     padding-left: 20px !important;
 }
-
 .nav-link i {
     margin-right: 12px;
 }
-
 .nav-link:hover {
     background-color: #ffffff;
     color: #1f7e8c !important;
     border-radius: 0%;
 }
-
 .disabled-nav {
     color: rgba(255, 255, 255, 0.5);
     pointer-events: visible;
 }
-
 .navbar-logout {
-    background-color: #d9534f;
+    background-color: rgb(228, 24, 24);
     color: white !important;
     font-weight: 600;
     font-size: 1.1rem;
@@ -68,7 +83,6 @@
     width: 100%;
     text-decoration: none;
 }
-
 .navbar-logout:hover {
     background-color: #c9302c !important;
 }
@@ -95,49 +109,53 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Shipment Container */
-.shipment-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    margin-top: 50px;
-    padding: 0 20px;
-    
-}
-
-/* Shipment Card */
-.shipment-card {
+/* Table Styling */
+.shipment-table {
     width: 100%;
-    max-width: 850px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 25px 30px;
-    transition: transform 0.2s ease;
-    background-color: #b6ddcd;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 0.95rem;
 }
 
-.shipment-card:hover {
-    transform: scale(1.01);
+.shipment-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  color: black;
+  background-color: white;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Shipment Details */
-.shipment-detail {
-    margin-bottom: 10px;
-    color: black;
+.shipment-table thead {
+  background-color: #6675bf !important;
+  color: white !important;
 }
 
-.field {
-    margin-bottom: 8px;
-    font-size: 1rem;
+.shipment-table thead th {
+  padding: 10px 14px;
+  font-weight: 700;
+  text-align: left;
+  border: none;
 }
 
-.label {
-    font-weight: 600;
-    color: black;
+.shipment-table tbody tr:nth-child(even) {
+  background-color: #f6f8fb;
 }
 
-/* No Shipments Message */
+.shipment-table tbody tr:hover {
+  background-color: #dfe7fd;
+  transition: background-color 0.2s ease;
+}
+
+
+.shipment-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e3e8ee;
+  text-align: left;
+}
+
 .no-shipments {
     text-align: center;
     font-size: 1.2rem;
@@ -147,12 +165,58 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+        height: 100vh;
+        padding: 0;
+        overflow-x: hidden;
+        align-items: flex-start;
+    }
+    .nav-link {
+        font-size: 0;
+        padding: 12px 0;
+        justify-content: center;
+    }
+    .nav-link i {
+        font-size: 1.4rem;
+        margin-right: 0;
+    }
+    .nav-item {
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    .disabled-nav {
+        font-size: 0;
+        padding: 12px 0;
+        text-align: center;
+    }
+    .disabled-nav i {
+        font-size: 1.4rem;
+        margin-right: 0;
+    }
+    .navbar-logout {
+        font-size: 0;
+        padding: 10px 0;
+        width: 60px;
+        text-align: center;
+    }
+    .navbar-logout i {
+        font-size: 1.4rem;
+        margin: 0;
+    }
+    .greet {
+        margin-left: -78px;
+        font-size: 1.2rem;
+        padding: 16px 10px;
+        height: auto;
+        margin-top: -19px;
+        margin-left: -12px;
+    }
     .main-content {
-        margin-left: 0;
+        margin-left: 60px;
         padding: 20px 15px;
     }
-
-    .shipment-card {
-        padding: 20px;
+    .shipment-table {
+        font-size: 0.85rem;
     }
 }
