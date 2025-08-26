@@ -39,7 +39,7 @@ services:
 
   servers:
     build: ./kafka/Server
-    image: servers:latest
+    image: sadhvishetty1703/servers:latest
     ports:
       - "12345:12345"
     depends_on:
