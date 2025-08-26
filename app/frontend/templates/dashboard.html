@@ -12,7 +12,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="../static/dashboard.css" />
 
-  <!-- Scripts (deferred for performance) -->
+  <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" defer></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" defer></script>
@@ -55,24 +55,56 @@
 
     <a href="/logout" class="navbar-logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
   </nav>
+
   <main class="main-content" id="main">
     <section class="greet">Hi {{ user.username }}, Welcome to SCMXPertLite</section>
+
     <div class="image">
       <img src="/images/dashboard.jpg" alt="Background" />
+
+      <div class="cards-container" style="
+        position: absolute;
+        top: 47%;
+        left: 53%;
+        transform: translate(-50%, -50%);
+        margin-top: 0;
+        z-index: 10;
+      ">
+        {% if user.role == "Admin" %}
+          <div class="glass-card">
+            <h3>Create New Shipment</h3>
+            <p>Start a new shipment process.</p>
+            <button onclick="location.href='/shipment'">Create Shipment</button>
+          </div>
+
+          <div class="glass-card">
+            <h3>View Device Data</h3>
+            <p>Access detailed device data stream.</p>
+            <button onclick="location.href='/deviceData'"> Device Data</button>
+          </div>
+        {% else %}
+          <div class="glass-card">
+            <h3>Create New Shipment</h3>
+            <p>Start a new shipment process quickly.</p>
+            <button onclick="location.href='/shipment'">Create Shipment</button>
+          </div>
+        {% endif %}
+      </div>
     </div>
   </main>
+
   <script>
-    const sessionTimeout = 10 * 60 * 1000;
-    let timeout;
+    let sessionTimeout = 10 * 60 * 1000;
+  let timeout;
 
-    function startSessionTimeout() {
-      clearTimeout(timeout);
-      timeout = setTimeout(logout, sessionTimeout);
-    }
+  function startSessionTimeout() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => window.location.href = "/logout", sessionTimeout);
+  }
 
-    function logout() {
-      window.location.href = "/logout";
-    }
+  document.addEventListener("mousemove", startSessionTimeout);
+  document.addEventListener("keydown", startSessionTimeout);
+
 
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");

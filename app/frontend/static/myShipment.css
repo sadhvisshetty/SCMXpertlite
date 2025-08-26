@@ -111,13 +111,6 @@
 
 /* Table Styling */
 .shipment-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    font-size: 0.95rem;
-}
-
-.shipment-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
@@ -125,12 +118,14 @@
   background-color: white;
   border-radius: 6px;
   overflow: hidden;
+  border-color: 1px solid black;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .shipment-table thead {
-  background-color: #6675bf !important;
+  background-color: #30408d !important;
   color: white !important;
+ 
 }
 
 .shipment-table thead th {
@@ -138,6 +133,7 @@
   font-weight: 700;
   text-align: left;
   border: none;
+  border:1px solid rgb(161, 154, 154);
 }
 
 .shipment-table tbody tr:nth-child(even) {
@@ -185,6 +181,11 @@
         margin-bottom: 5px;
         text-align: center;
     }
+    .navbar-nav {
+        margin-left: -19px;
+        width: 83px;
+    }
+
     .disabled-nav {
         font-size: 0;
         padding: 12px 0;
@@ -197,12 +198,16 @@
     .navbar-logout {
         font-size: 0;
         padding: 10px 0;
-        width: 60px;
+        width: 80px;
         text-align: center;
+        margin: 10px;
     }
     .navbar-logout i {
         font-size: 1.4rem;
         margin: 0;
+    }
+    .company-name {
+        display: none;
     }
     .greet {
         margin-left: -78px;

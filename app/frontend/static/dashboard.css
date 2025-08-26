@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 
-/* Sidebar Navbar */
 .navbar {
   position: fixed;
   top: 0;
@@ -60,8 +59,6 @@
   line-height: 1;
 }
 
-
-/* Nav List */
 .navbar-nav {
   list-style: none;
   margin: 0;
@@ -109,7 +106,6 @@
   cursor: not-allowed;
 }
 
-/* Logout Button */
 .navbar-logout {
   background-color: rgb(228, 24, 24);
   color: white !important;
@@ -127,7 +123,7 @@
   background-color: #c9302c;
 }
 
-/* Main Content */
+
 .main-content {
   margin-left: 250px;
   width: calc(100% - 250px);
@@ -143,7 +139,7 @@
   width: calc(100% - 60px);
 }
 
-/* Greeting Section */
+
 .greet {
   background-color: #f5f5f5;
   font-weight: 600;
@@ -155,7 +151,6 @@
   flex-shrink: 0;
 }
 
-/* Image Area */
 .image {
   flex-grow: 1;
   position: relative;
@@ -171,7 +166,48 @@
   left: 0;
 }
 
-/* Responsive Styles */
+.cards-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 45px;
+  top: 48%;
+    left: 53%;
+  margin-top: 0; 
+}
+
+.glass-card {
+  background: rgb(253 247 247 / 51%);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 20px;
+  color: #2a2828;
+  width: 334px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.glass-card button {
+  background-color:rgb(39 94 114 / 66%);
+  border: none;
+  padding: 10px;
+  color: #000000de;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.glass-card button:hover {
+  background-color: rgb(39 94 114 / 82%);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .navbar {
     width: 60px;

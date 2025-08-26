@@ -5,8 +5,7 @@ FROM python:3.12.7
 WORKDIR /app
 
 # Copy requirements file first to leverage Docker cache
-COPY app/backend ./app/backend
-COPY app/frontend ./app/frontend
+COPY . .
 # Install dependencies
 
 RUN pip install --no-cache-dir -r app/backend/requirements.txt
@@ -16,6 +15,6 @@ RUN pip install --no-cache-dir -r app/backend/requirements.txt
 EXPOSE 8000
 
 # Command to run FastAPI using Uvicorn
-CMD ["uvicorn", "app.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.backend.main:app","--reload" ,"--host", "0.0.0.0", "--port", "8000"]
 
 

@@ -9,20 +9,6 @@
   <link rel="stylesheet" href="/static/myAccount.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="/static/dashboard.css" />
-
-  <style>
-    .btn-delete {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 3px;
-    }
-    .btn-delete:hover {
-      background-color: #c0392b;
-    }
-  </style>
 </head>
 <body>
   <nav class="navbar" id="sidebar">
@@ -74,6 +60,8 @@
               <th>Username</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Edit Role</th>
+              <th>Total Shipments</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -108,21 +96,42 @@
       const tbody = document.querySelector('#users-table tbody');
       const userError = document.getElementById('user-error-msg');
       if (!tbody) return;
+
       try {
         const response = await fetch('/users', { credentials: 'include' });
         if (!response.ok) throw new Error('Failed to fetch users');
         const users = await response.json();
+        const currentUserResponse = await fetch('/myAccount', { credentials: 'include' });
+        const currentUser = currentUserResponse.ok ? await currentUserResponse.json() : { username: '' };
+
+        const mainAdminUsername = "Admin"; 
+
         tbody.innerHTML = '';
-        users.filter(user => user.role.toLowerCase() !== 'admin').forEach(user => {
+        users.forEach(user => {
+          // Disable role change for current user and main admin
+          const disableRoleChange = (user.username === currentUser.username) || (user.username === mainAdminUsername);
+
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>${user.username}</td>
             <td>${user.email}</td>
-            <td>${user.role}</td>
-            <td><button class="btn-delete" data-username="${user.username}" data-userid="${user.id}">Delete</button></td>`;
+            <td class="user-role">${user.role}</td>
+            <td class="edit-role-cell">
+              <select class="role-select" data-userid="${user.id}" ${disableRoleChange ? 'disabled' : ''}>
+                <option value="User" ${user.role === 'User' ? 'selected' : ''}>User</option>
+                <option value="Admin" ${user.role === 'Admin' ? 'selected' : ''}>Admin</option>
+              </select>
+              <button class="btn-change-role" data-username="${user.username}" data-userid="${user.id}" ${disableRoleChange ? 'disabled' : ''}>Edit</button>
+            </td>
+            <td style="text-align: center;">${user.shipment_count ?? 0}</td>
+            <td>
+              <button class="btn-delete" data-username="${user.username}" data-userid="${user.id}">Delete</button>
+            </td>
+          `;
           tbody.appendChild(tr);
         });
 
+        // Delete button event listeners
         document.querySelectorAll('.btn-delete').forEach(button => {
           button.addEventListener('click', async (e) => {
             const username = e.target.getAttribute('data-username');
@@ -139,6 +148,43 @@
             }
           });
         });
+
+        // Change Role button event listeners
+        document.querySelectorAll('.btn-change-role').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const userId = e.target.getAttribute('data-userid');
+            const username = e.target.getAttribute('data-username');
+            const selectElem = e.target.parentElement.querySelector('.role-select');
+            const selectedRole = selectElem.value;
+
+            if (!confirm(`Change role of "${username}" to "${selectedRole}"?`)) return;
+
+            try {
+              const res = await fetch(`/user/${encodeURIComponent(userId)}/role`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ new_role: selectedRole })
+              });
+
+              if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.detail || 'Failed to update role');
+              }
+
+              // Update role in table visually
+              const roleTd = e.target.closest('tr').querySelector('.user-role');
+              roleTd.textContent = selectedRole;
+
+              alert(`Role for user "${username}" updated to "${selectedRole}".`);
+            } catch (err) {
+              alert('Error updating role: ' + err.message);
+            }
+          });
+        });
+
       } catch (err) {
         userError.style.display = 'block';
         userError.textContent = 'Could not load users. Please try again later.';

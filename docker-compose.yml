@@ -3,7 +3,7 @@ version: '3.12'
 services:
 
   scm:
-    image: demo-scm:latest
+    image: sadhvishetty1703/scm:v1.0
     ports:
       - "8000:8000"
     env_file:
@@ -38,7 +38,8 @@ services:
       - mongodb_data:/data/db
 
   servers:
-    image: demo-servers:latest
+    build: ./kafka/Server
+    image: servers:latest
     ports:
       - "12345:12345"
     depends_on:

@@ -99,21 +99,7 @@
 
   document.addEventListener("mousemove", startSessionTimeout);
   document.addEventListener("keydown", startSessionTimeout);
-  
-  document.addEventListener("DOMContentLoaded", function () {
-    const btn = document.getElementById("deviceDataBtn");
-    if (!btn) return;
 
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      const message = document.createElement("div");
-      message.className = "message";
-      message.textContent = "You do not have permission to access Device Data.";
-      const container = document.querySelector(".navbar-nav").children[4];
-      container.appendChild(message);
-      setTimeout(() => container.removeChild(message), 2000);
-    });
-  });
 </script>
 
 </body>

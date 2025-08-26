@@ -22,6 +22,9 @@ EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 FORGOT_PASSWORD_TEMPLATE = "forgotPassword.html"
 LOGIN_TEMPLATE = "Login.html"
 
+SMTP_SERVER= "smtp.gmail.com"
+SMTP_PORT=587
+
 router = APIRouter()
 
 # In-memory store for OTPs
@@ -33,18 +36,49 @@ def generate_otp(length=6):
 def send_otp_email(recipient_email: str, otp: str):
     msg = EmailMessage()
     msg.set_content(f"Your OTP is: {otp}")
-    msg["Subject"] = "Your SCMXpert OTP Code for changing the Password"
+    msg["Subject"] = "Your SCMXpertLite OTP Code for changing the Password"
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = recipient_email
 
     try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        with smtplib.SMTP(SMTP_SERVER,SMTP_PORT) as smtp:
             smtp.starttls()
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
         print(f"OTP sent to {recipient_email}")
     except Exception as e:
         print(f"Error sending email: {e}")
+        traceback.print_exc()
+
+
+def send_role_change_email(recipient_email: str, new_role: str):
+    subject = "Role Changed Notification"
+    body = f"""
+    Dear User,
+
+    Your role for SCMXpertLite has been changed to '{new_role}'.
+
+    If you have any queries, please do contact the support.
+
+    Regards,
+    SCMXpert Team
+    Support - sadhvisshetty03@gmail.com
+    """
+
+    msg = EmailMessage()
+    msg.set_content(body)
+    msg["Subject"] = subject
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = recipient_email
+
+    try:
+        with smtplib.SMTP(SMTP_SERVER,SMTP_PORT) as smtp:
+            smtp.starttls()
+            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            smtp.send_message(msg)
+        print(f"Role change email sent to {recipient_email}")
+    except Exception as e:
+        print(f"Error sending role change email: {e}")
         traceback.print_exc()
 
 def send_account_deleted_email(recipient_email: str):
@@ -68,7 +102,7 @@ def send_account_deleted_email(recipient_email: str):
     msg["To"] = recipient_email
 
     try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        with smtplib.SMTP(SMTP_SERVER,SMTP_PORT) as smtp:
             smtp.starttls()
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
