@@ -12,11 +12,13 @@ import uvicorn
 
 app = FastAPI()
 
-
+frontend_url = os.getenv("URL")
+print('hello')
+print(frontend_url)
 #CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=[frontend_url],  
     allow_credentials=True,
     allow_methods=["*"],  
     allow_headers=["*"],  
@@ -78,7 +80,7 @@ async def get_login(request: Request):
 
 @app.get("/signUp", response_class=HTMLResponse)
 async def get_signup(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
+    return templates.TemplateResponse("signUp.html", {"request": request})
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
